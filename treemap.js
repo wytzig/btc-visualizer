@@ -7,6 +7,41 @@ input.addEventListener("input", render);
 updateBtn.addEventListener("click", render);
 window.addEventListener("resize", render);
 
+const importBtn = document.getElementById("importBtn");
+const fileInput = document.getElementById("fileInput");
+
+importBtn.addEventListener("click", () => {
+  fileInput.click();
+});
+
+fileInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const json = JSON.parse(event.target.result);
+      const transactions = json.transactions || [];
+      
+      // Extract amounts from transactions
+      const amounts = transactions
+        .map(tx => tx.amount)
+        .filter(amount => amount && Number(amount) > 0);
+      
+      // Update textarea with amounts
+      input.value = amounts.join("\n");
+      render();
+      
+      fileInput.value = ''; // Reset file input
+    } catch (err) {
+      alert("Error parsing JSON file: " + err.message);
+    }
+  };
+  
+  reader.readAsText(file);
+});
+
 function parseInput() {
     return input.value
         .split("\n")
