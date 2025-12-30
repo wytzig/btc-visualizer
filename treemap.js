@@ -156,7 +156,7 @@ function render() {
         el.style.width = d.width + "px";
         el.style.height = d.height + "px";
 
-        if (d.width > 80 && d.height > 24) {
+        if (d.width > 50 && d.height > 12) {
             el.innerHTML = `
         <div class="label">
           ${d.label} (${d.value.toLocaleString()} sats)

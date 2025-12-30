@@ -101,13 +101,27 @@ button:hover {
   border: 1px solid #111;
   background: #FE9900;
   overflow: hidden;
+
+  display: flex;
+  align-items: flex-start;
 }
 
 .node .label {
   font-size: 11px;
   padding: 4px;
   color: #000;
-  white-space: nowrap;
+
+  white-space: normal;          /* allow wrapping */
+  word-break: break-word;       /* break long words */
+  overflow-wrap: anywhere;      /* force wrap if needed */
+
+  line-height: 1.2;
+  max-width: 100%;
+  max-height: 100%;
+
+  overflow: hidden;             /* clip if still too small */
+  display: flex;
+  align-items: flex-start;
 }
 
 /* BTC Chart */
