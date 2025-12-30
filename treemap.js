@@ -58,7 +58,6 @@ clearBtn.addEventListener("click", () => {
 
 });
 
-
 function parseInput() {
     return input.value
         .split("\n")
@@ -132,19 +131,59 @@ function computeLayout(data, width, height) {
     return rects;
 }
 
+const tooltip = document.getElementById("tooltip");
+let activeNode = null;
+let btcPriceEUR = null;
+const currencySymbol = "€";
+
+// Fetch BTC price
+async function fetchBTCPrice() {
+    try {
+        const res = await fetch(
+            "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur"
+        );
+        const data = await res.json();
+        btcPriceEUR = data.bitcoin.eur;
+    } catch (e) {
+        console.warn("Failed to fetch BTC price", e);
+    }
+}
+fetchBTCPrice();
+setInterval(fetchBTCPrice, 5 * 60 * 1000);
+
+// Move tooltip with mouse only if active
+document.addEventListener("mousemove", (e) => {
+    if (!activeNode || !tooltip) return;
+    tooltip.style.left = e.clientX + 12 + "px";
+    tooltip.style.top = e.clientY + 12 + "px";
+});
+
+// Click anywhere else hides tooltip
+document.addEventListener("click", () => {
+    activeNode = null;
+    if (tooltip) tooltip.style.opacity = "0";
+});
+
+
+// Set default values if empty
+if (!input.value.trim()) {
+    input.value = `0.12
+0.035
+0.008
+0.42`;
+}
+
+// Now render the treemap
+render();
+
 function render() {
     canvas.innerHTML = "";
-
-    const data = parseInput()
-        .sort((a, b) => b.value - a.value);
-
+    const data = parseInput().sort((a, b) => b.value - a.value);
     updateTotal(data);
-
     if (!data.length) return;
 
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
-
     const layout = computeLayout(data, width, height);
 
     for (const d of layout) {
@@ -158,14 +197,40 @@ function render() {
 
         if (d.width > 50 && d.height > 12) {
             el.innerHTML = `
-        <div class="label">
-          ${d.label} (${d.value.toLocaleString()} sats)
-        </div>
-      `;
+                <div class="label">
+                    ${d.label} (${d.value.toLocaleString()} sats)
+                </div>
+            `;
         }
+
+        // Click node → show tooltip
+        el.addEventListener("click", (e) => {
+            e.stopPropagation(); // prevent document click
+
+            activeNode = el;
+
+            const sats = d.value;
+            const btc = sats / 100000000;
+
+            let currencyLine = "Loading price...";
+            if (btcPriceEUR) {
+                const eurValue = btc * btcPriceEUR;
+                currencyLine = `${currencySymbol}${eurValue.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })}`;
+            }
+
+            if (tooltip) {
+                tooltip.innerHTML = `
+                    <strong>${btc} BTC</strong><br>
+                    ${sats.toLocaleString()} sats<br>
+                    ${currencyLine}
+                `;
+                tooltip.style.opacity = "1";
+            }
+        });
 
         canvas.appendChild(el);
     }
 }
-
-render();
