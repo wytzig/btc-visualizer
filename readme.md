@@ -12,8 +12,7 @@ If you have request for features, please let me know!
 
 ### latest
 ![alt text](image.png)
-### V0.1
-![alt text](image-1.png)
+
 
 ## how to run?
 
@@ -25,3 +24,7 @@ If you have request for features, please let me know!
 ## Note
 Please due note that entering and publishing your actual btc amounts can
 be used to detect your identity so never expose exact amounts!
+
+## older screenshots
+### V0.1
+![alt text](image-1.png)
