@@ -3,11 +3,16 @@ A small visualizer where you can enter your sats/btc value per address
 to get a visual overview over the size. Can be handy when figuring what and 
 when to consolidate! 
 
+If you have request for features, please let me know! 
+
 # Features
 1. allow to manually enter your btc-value per address and visualize them
 1. import trezor json (wip, not counting it correctly at the moment)
 1. clear all data 
 
+### latest
+![alt text](image.png)
+### V0.1
 ![alt text](image-1.png)
 
 ## how to run?
