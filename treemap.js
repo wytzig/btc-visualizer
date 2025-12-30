@@ -151,17 +151,35 @@ async function fetchBTCPrice() {
 fetchBTCPrice();
 setInterval(fetchBTCPrice, 5 * 60 * 1000);
 
-// Move tooltip with mouse only if active
+// Move tooltip with mouse only if active AND not clicked/fixed
 document.addEventListener("mousemove", (e) => {
     if (!activeNode || !tooltip) return;
-    tooltip.style.left = e.clientX + 12 + "px";
-    tooltip.style.top = e.clientY + 12 + "px";
+
+    // Only move tooltip if the user didn't click to fix its position
+    if (!activeNode.dataset.fixed) {
+        let left = e.clientX + 12;
+        let top = e.clientY + 12;
+
+        tooltip.style.left = left + "px";
+        tooltip.style.top = top + "px";
+
+        const rect = tooltip.getBoundingClientRect();
+
+        // Prevent tooltip from going offscreen
+        if (rect.right > window.innerWidth) {
+            tooltip.style.left = e.clientX - rect.width - 12 + "px";
+        }
+        if (rect.bottom > window.innerHeight) {
+            tooltip.style.top = e.clientY - rect.height - 12 + "px";
+        }
+    }
 });
 
 // Click anywhere else hides tooltip
 document.addEventListener("click", () => {
     activeNode = null;
     if (tooltip) tooltip.style.opacity = "0";
+    document.querySelectorAll('.node').forEach(n => delete n.dataset.fixed);
 });
 
 
@@ -203,11 +221,11 @@ function render() {
             `;
         }
 
-        // Click node → show tooltip
         el.addEventListener("click", (e) => {
             e.stopPropagation(); // prevent document click
 
             activeNode = el;
+            activeNode.dataset.fixed = "true"; // mark as fixed, mousemove won't override
 
             const sats = d.value;
             const btc = sats / 100000000;
@@ -215,7 +233,7 @@ function render() {
             let currencyLine = "Loading price...";
             if (btcPriceEUR) {
                 const eurValue = btc * btcPriceEUR;
-                currencyLine = `${currencySymbol}${eurValue.toLocaleString(undefined, {
+                currencyLine = `${currencySymbol}${(btc * btcPriceEUR).toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 })}`;
@@ -223,19 +241,41 @@ function render() {
 
             if (tooltip) {
                 tooltip.innerHTML = `
-                    <strong>${btc} BTC</strong><br>
-                    ${sats.toLocaleString()} sats<br>
-                    ${currencyLine}
-                `;
-                tooltip.style.opacity = "1";
+            <strong>${btc} BTC</strong><br>
+            ${sats.toLocaleString()} sats<br>
+            ${currencyLine}
+        `;
+
+                // Initial tooltip position
+                let left = e.clientX + 12;
+                let top = e.clientY + 12;
+
+                // Get tooltip dimensions
+                tooltip.style.opacity = "1"; // must show to measure
+                const rect = tooltip.getBoundingClientRect();
+
+                // Adjust if going off right edge
+                if (left + rect.width > window.innerWidth) {
+                    left = e.clientX - rect.width - 12;
+                }
+
+                // Adjust if going off bottom edge
+                if (top + rect.height > window.innerHeight) {
+                    top = e.clientY - rect.height - 12;
+                }
+
+                tooltip.style.left = left + "px";
+                tooltip.style.top = top + "px";
             }
         });
+
 
         // Hide tooltip when mouse leaves the node
         el.addEventListener("mouseleave", () => {
             if (activeNode === el) {
                 activeNode = null;
                 tooltip.style.opacity = "0";
+                delete el.dataset.fixed; // remove fixed flag
             }
         });
 
