@@ -2,6 +2,7 @@
   box-sizing: border-box;
 }
 
+/* Layout */
 body {
   margin: 0;
   height: 100vh;
@@ -17,49 +18,39 @@ body {
   padding: 16px;
   background: #0b0b0b;
   border-right: 1px solid #333;
+  display: flex;
+  flex-direction: column;
 }
 
 #sidebar h2 {
   margin-top: 0;
 }
 
+.total-box {
+  margin-bottom: 12px;
+  padding: 8px;
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+/* Input */
 textarea {
   width: 100%;
-  height: calc(100% - 280px); /* Changed from 230px to make room for clear button */
+  flex: 1;
   background: #000;
   color: #0f0;
   border: 1px solid #333;
   padding: 10px;
   font-family: monospace;
   resize: none;
+  margin-bottom: 12px;
 }
 
-/* Treemap canvas */
-#canvas {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Treemap nodes */
-.node {
-  position: absolute;
-  border: 1px solid #111;
-  background: #4caf50;
-  overflow: hidden;
-}
-
-.node .label {
-  font-size: 11px;
-  padding: 4px;
-  color: #000;
-  white-space: nowrap;
-}
-
+/* Buttons */
 button {
   width: 100%;
   padding: 12px;
-  margin-top: 12px;
+  margin-top: 8px;
   background: #4caf50;
   color: #000;
   border: none;
@@ -74,7 +65,6 @@ button:hover {
 
 #importBtn {
   background: #2196f3;
-  margin-top: 8px;
 }
 
 #importBtn:hover {
@@ -83,9 +73,51 @@ button:hover {
 
 #clearBtn {
   background: #f44336;
-  margin-top: 8px;
 }
 
 #clearBtn:hover {
   background: #e57373;
+}
+
+/* Main Content */
+#main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Treemap Canvas */
+#canvas {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #111;
+}
+
+/* Treemap Nodes */
+.node {
+  position: absolute;
+  border: 1px solid #111;
+  background: #FE9900;
+  overflow: hidden;
+}
+
+.node .label {
+  font-size: 11px;
+  padding: 4px;
+  color: #000;
+  white-space: nowrap;
+}
+
+/* BTC Chart */
+.btc-chart-wrapper {
+  height: 320px;
+  width: 100%;
+  border-top: 1px solid #333;
+}
+
+#tradingview_btc {
+  width: 100%;
+  height: 100%;
 }

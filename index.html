@@ -1,37 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <title>Bitcoin Address Treemap</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <title>Bitcoin Address Treemap</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-    <aside id="sidebar">
-        <h2>Address Balances</h2>
-        <div style="margin-bottom: 12px; padding: 8px; background: #1a1a1a; border-radius: 4px;">
-            Total: <strong id="total">0 BTC</strong>
-        </div>
-        <p>Enter BTC values, one per line:</p>
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <h2>Address Balances</h2>
 
-        <textarea id="input" placeholder="Enter values in BTC, one per line">
+    <div class="total-box">
+      Total: <strong id="total">0 BTC</strong>
+    </div>
+
+    <p>Enter BTC values, one per line:</p>
+
+    <textarea id="input" placeholder="Enter values in BTC, one per line">
 0.12
 0.035
 0.008
 0.42
-</textarea>
+    </textarea>
 
-        <button id="updateBtn">Update Visualization</button>
-        <button id="importBtn">Import Trezor JSON</button>
-        <button id="clearBtn">Clear All</button>
-        <input type="file" id="fileInput" accept=".json" style="display: none;">
-    </aside>
+    <button id="updateBtn">Update Visualization</button>
+    <button id="importBtn">Import Trezor JSON</button>
+    <button id="clearBtn">Clear All</button>
 
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
+  </aside>
+
+  <!-- Main Content -->
+  <div id="main-content">
+
+    <!-- Treemap -->
     <main id="canvas"></main>
 
-    <script src="treemap.js"></script>
-</body>
+    <!-- BTC Chart -->
+    <div class="btc-chart-wrapper">
+      <div id="tradingview_btc"></div>
+    </div>
 
+  </div>
+
+  <!-- Treemap Logic -->
+  <script src="treemap.js"></script>
+
+  <!-- TradingView BTC Chart -->
+  <script src="https://s3.tradingview.com/tv.js"></script>
+  <script>
+    new TradingView.widget({
+      autosize: true,
+      symbol: "BTCEUR",
+      interval: "15",
+      timezone: "Etc/UTC",
+      theme: "dark",
+      style: "1",
+      locale: "en",
+      enable_publishing: false,
+      hide_top_toolbar: false,
+      hide_legend: false,
+      container_id: "tradingview_btc"
+    });
+  </script>
+
+</body>
 </html>
