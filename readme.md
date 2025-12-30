@@ -18,5 +18,5 @@ be used to detect your identity so never expose exact amounts!
 
 # Features
 1. allow to manually enter your btc-value per address and visualize them
-1. import trezor json
+1. import trezor json (wip, not counting it correctly at the moment)
 1. clear all data 

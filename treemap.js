@@ -24,20 +24,17 @@ fileInput.addEventListener("change", (e) => {
             const json = JSON.parse(event.target.result);
             const transactions = json.transactions || [];
 
-            // Find all unspent outputs (UTXOs) that you own
-            const amounts = [];
-
-            transactions.forEach(tx => {
-                if (!tx.details || !tx.details.vout) return;
-
-                // Look through all outputs in this transaction
-                tx.details.vout.forEach(output => {
-                    // Only include outputs that are yours AND unspent
-                    if ((output.isOwn || output.isAccountOwned) && !output.spent) {
-                        amounts.push(output.value);
+            // Calculate net balance changes
+            // type "recv" adds to balance, type "sent" reduces balance
+            const amounts = transactions
+                .map(tx => {
+                    const amount = Number(tx.amount);
+                    if (tx.type === "sent") {
+                        return -amount; // Deduct sent transactions
                     }
-                });
-            });
+                    return amount; // Add received transactions
+                })
+                .filter(amount => amount !== 0);
 
             // Update textarea with amounts
             input.value = amounts.join("\n");
