@@ -24,10 +24,17 @@ fileInput.addEventListener("change", (e) => {
       const json = JSON.parse(event.target.result);
       const transactions = json.transactions || [];
       
-      // Extract amounts from transactions
+      // Calculate net balance changes
+      // type "recv" adds to balance, type "sent" reduces balance
       const amounts = transactions
-        .map(tx => tx.amount)
-        .filter(amount => amount && Number(amount) > 0);
+        .map(tx => {
+          const amount = Number(tx.amount);
+          if (tx.type === "sent") {
+            return -amount; // Deduct sent transactions
+          }
+          return amount; // Add received transactions
+        })
+        .filter(amount => amount !== 0);
       
       // Update textarea with amounts
       input.value = amounts.join("\n");
@@ -41,6 +48,16 @@ fileInput.addEventListener("change", (e) => {
   
   reader.readAsText(file);
 });
+
+const clearBtn = document.getElementById("clearBtn");
+
+clearBtn.addEventListener("click", () => {
+  if (confirm("Clear all data?")) {
+    input.value = '';
+    render();
+  }
+});
+
 
 function parseInput() {
     return input.value
