@@ -1,0 +1,73 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  font-family: system-ui, sans-serif;
+  background: #111;
+  color: #eee;
+}
+
+/* Sidebar */
+#sidebar {
+  width: 320px;
+  padding: 16px;
+  background: #0b0b0b;
+  border-right: 1px solid #333;
+}
+
+#sidebar h2 {
+  margin-top: 0;
+}
+
+textarea {
+  width: 100%;
+  height: calc(100% - 180px); /* Changed from 140px to make room for total + button */
+  background: #000;
+  color: #0f0;
+  border: 1px solid #333;
+  padding: 10px;
+  font-family: monospace;
+  resize: none;
+}
+
+/* Treemap canvas */
+#canvas {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Treemap nodes */
+.node {
+  position: absolute;
+  border: 1px solid #111;
+  background: #4caf50;
+  overflow: hidden;
+}
+
+.node .label {
+  font-size: 11px;
+  padding: 4px;
+  color: #000;
+  white-space: nowrap;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  background: #4caf50;
+  color: #000;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:hover {
+  background: #5dc461;
+}
