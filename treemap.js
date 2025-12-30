@@ -231,6 +231,14 @@ function render() {
             }
         });
 
+        // Hide tooltip when mouse leaves the node
+        el.addEventListener("mouseleave", () => {
+            if (activeNode === el) {
+                activeNode = null;
+                tooltip.style.opacity = "0";
+            }
+        });
+
         canvas.appendChild(el);
     }
 }
