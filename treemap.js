@@ -159,8 +159,7 @@ function render() {
         if (d.width > 80 && d.height > 24) {
             el.innerHTML = `
         <div class="label">
-          ${d.label}<br>
-          ${d.value.toLocaleString()} sats
+          ${d.label} (${d.value.toLocaleString()} sats)
         </div>
       `;
         }
