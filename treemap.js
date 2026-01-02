@@ -26,14 +26,45 @@ fileInput.addEventListener("change", (e) => {
 
             // Calculate net balance changes
             // type "recv" adds to balance, type "sent" reduces balance
-            const amounts = transactions
-                .map(tx => {
-                    const amount = Number(tx.amount);
-                    if (tx.type === "sent") {
-                        return -amount; // Deduct sent transactions
-                    }
-                    return amount; // Add received transactions
-                })
+            // type "self" should be excluded (internal transfers with fees)
+            // Track balance changes per address
+            const addressBalances = new Map();
+
+            // Process each transaction
+            transactions.forEach(tx => {
+                const fee = Number(tx.fee || 0);
+
+                // Process all outputs (vout)
+                if (tx.details?.vout) {
+                    tx.details.vout.forEach(output => {
+                        if (output.isOwn || output.isAccountOwned) {
+                            // Money coming TO our address
+                            const addr = output.addresses?.[0];
+                            if (addr) {
+                                const current = addressBalances.get(addr) || 0;
+                                addressBalances.set(addr, current + Number(output.value));
+                            }
+                        }
+                    });
+                }
+
+                // Process all inputs (vin)
+                if (tx.details?.vin) {
+                    tx.details.vin.forEach(input => {
+                        if (input.isOwn || input.isAccountOwned) {
+                            // Money leaving FROM our address
+                            const addr = input.addresses?.[0];
+                            if (addr) {
+                                const current = addressBalances.get(addr) || 0;
+                                addressBalances.set(addr, current - Number(input.value));
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Convert address balances to array of amounts
+            const amounts = Array.from(addressBalances.values())
                 .filter(amount => amount !== 0);
 
             // Update textarea with amounts
